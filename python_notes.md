@@ -203,7 +203,8 @@ finally:
     # code run whether exception has been raised or not
 </pre>
 Example of "roulette" game:
-<pre>
+
+```
 # tp 2: ZCasino 
 
 from random import *
@@ -243,8 +244,8 @@ def jouer():
       print "Vous avez perdu ", mise, "euros." 
 #
 jouer()
+```
 
-</pre>
 <h3>Lists and tuples</h3>
 <li>lists are mutables sequences that can contain other objets</li>
 <li>to build a list: <code> list = [ item1, item2, itemN ]</code></li>
@@ -305,7 +306,8 @@ following function declaration: <code>def f (*in_list, **in_dictionary)</code>
 <li>function can modify variable indriectlry by calling object methods</li>
 <li>keyword <code>global</code> allows to reference global variable in function</li>
 <h3>Code example of anagram game</h3> 
-<pre>
+
+```
 -------------------------------------------------------
 # tp3.py jeu de l'anagramme entre le pendu et le scrabble
 # cree le 12.10.2017
@@ -396,7 +398,7 @@ mot = tirer_mot(longueur)
 tirage = sorted(mot)
 #print "=> tirage: ", tirage
 jouer(tirage, mot)
-</pre>
+```
 <h2> Object Oriented Programming </h2>
 <li>class is defined with <code>class className:</code></li>
 <li>methods ade defined like functions except that code is inside class definition</li>
@@ -422,7 +424,8 @@ property_name = property(get_method, set_method, delete_method, help_method)
 <br>
 <br> Example of how <code>__setitem__</code> is automatically called.
 <br> Here is source code:
-<pre>
+
+```
 # -*- coding: utf8 -*-
 class DictionnaireOrdonne:
 
@@ -452,9 +455,10 @@ class DictionnaireOrdonne:
       self._valeurs.append(valeur)
 #
 legumes = DictionnaireOrdonne(carotte = 26, haricot = 48)
-</pre>
+```
 Running above code generates following output:
-<pre>
+
+```
 $ python testdo.py 
 => __init__ before: cle =  carotte
 => __init__ before: self._cles =  []
@@ -468,7 +472,8 @@ $ python testdo.py
 => __setitem__ cle= haricot  valeur= 48
 => __init__ after: self._cles =  ['carotte', 'haricot']
 => __init__ after: self._valeurs =  [26, 48]
-</pre>
+```
+
 <br>
 <li> methods <code>__add__, __sub__, __mul__ </code> ... overload mathematical operators </li>
 <li> methods <code> _eq__, __ne__, __gt__ </code> ... overload comparison operators </li>
@@ -539,7 +544,8 @@ def intervalle(borne_inf, borne_sup):
 <li> Functions key can be specified with <code>key</code> argument. These functions are called for each sequence item to sort and return sort criteria</li>
 <br>
 To sort a tuple list on tuple 3rd column using a lambda function:
-<pre>
+
+```
 >>> sorted(etudiants, key=lambda colonnes: colonnes[2])
 [
     ('Thomas', 11, 12), 
@@ -549,9 +555,11 @@ To sort a tuple list on tuple 3rd column using a lambda function:
     ('Oriane', 14, 18)
 ]
 >>>
-</pre>
+```
+
 To sort a list of objects on "moyenne" attribute using a lambda function:
-<pre>
+
+```
 >>> 
 sorted(etudiants, key=lambda etudiant: etudiant.moyenne)
 [
@@ -563,247 +571,13 @@ sorted(etudiants, key=lambda etudiant: etudiant.moyenne)
     &ltEtudiant Oriane (Age=14, moyenne=18)>
 ]
 >>>
-</pre>
+```
+
 <li> <code>operator</code> module gives <code>itemgetter</code> and <code>attrgetter</code> to allow sorting tuples list or object list by given attribute</li>
 <li> Python sorting is "stable" which means that idem order is not changed if they are considered equal for sorting: this allow to chain sorting. </li>
 <br>
 <br>
-<h2>Another code example (game) </h2>
-<pre>
-$ cat roboc.py
-# -*-coding:Utf-8 -*
 
-"""Ce fichier contient le code principal du jeu.
-
-Exécutez-le avec Python pour lancer le jeu.
-
-"""
-
-import os
-
-from carte import Carte
-
-# On charge les cartes existantes
-cartes = []
-for nom_fichier in os.listdir("cartes"):
-    if nom_fichier.endswith(".txt"):
-        chemin = os.path.join("cartes", nom_fichier)
-        nom_carte = nom_fichier[:-4].lower()
-        with open(chemin, "r") as fichier:
-            contenu = fichier.read()
-            # Création d'une carte, à compléter
-            print "Creation carte: ", nom_carte, "..."
-            carte = Carte(nom_carte, contenu) 
-            print "... OK"
-        cartes.append(carte)
-
-# On affiche les cartes existantes
-liste_cartes = []
-print("Labyrinthes existants :")
-for i, carte in enumerate(cartes):
-    print("  {} - {}".format(i + 1, carte.nom))
-    liste_cartes.append(carte)
-
-# On choisit la carte pour le jeu courant
-nombre_cartes = i + 1
-choix_carte_termine = False
-while (choix_carte_termine == False):
-   reponse = raw_input("Entrez un numero de labyrinthe pour commencer a jouer:") 
-   if (reponse.isdigit() == False):
-      print "Le numero de carte est incorrect."
-   numero_carte = int(reponse)
-   if ( numero_carte < 1 or numero_carte > nombre_cartes):
-      print "Le numero de carte est incorrect."
-   choix_carte_termine = True
-carte = liste_cartes[numero_carte - 1]
-
-# On joue et on sauvegarde la carte après le jeu
-jeu_continue =  True
-carte.afficher()
-while jeu_continue == True:
-   reponse = raw_input(">").upper()
-   if (reponse != 'Q'):
-       ok = carte.changer_position_robot(reponse)
-   else:
-       jeu_continue = False 
-#
-carte.tracer_robot()
-carte.ecrire_labyrinthe()
-exit() 
-
-#
- cat carte.py
-# -*-coding:Utf-8 -*
-
-import os
-
-"""Ce module contient la classe Carte."""
-
-class Carte:
-
-    """Objet de transition entre un fichier et un labyrinthe."""
-
-    def __init__(self, nom, chaine):
-        self.nom = nom
-        self.labyrinthe = self.creer_labyrinthe_depuis_chaine(chaine)
-
-        # retrouver la position du robot
-        trouve=False
-        for l in range(self.nb_lignes):
-            for c in range(self.nb_colonnes):
-                  if (self.lire_case(l, c) == 'X'):
-	              trouve=True
-                      self.robot_ligne_init = l
-                      self.robot_colonne_init = c
-                      self.robot_ligne_courante = l
-                      self.robot_colonne_courante = c
-        #
-        if trouve == False:
-	    print "Erreur: position du robot non trouve"
-	    exit()	
-
-    def creer_labyrinthe_depuis_chaine(self, chaine):
-        #
-        # remplacer les espaces par un caractère spécifique
-        nouvelle_chaine = chaine.replace(' ', 'V')
-        #
-        lignes = nouvelle_chaine.split()
-	self.nb_lignes = len(lignes)
-        # verifier le nombre de colonnes
-	nb_colonnes_precedent = 0
-        for l in lignes:	
-	    nb_colonnes = len(l)
-            if (nb_colonnes_precedent != 0 and nb_colonnes != nb_colonnes_precedent):
-               print "Erreur: incohérence sur nombre de colonnes", nb_colonnes_precedent, nb_colonnes
-               exit() 
-            nb_colonnes_precedent = nb_colonnes
-        self.nb_colonnes = nb_colonnes
-        #
-        return lignes
-
-    def ancienne_position_robot(self, x, y):  
-        return self.robot_ligne_init == x and self.robot_colonne_init == y 
-
-    def nouvelle_position_robot(self, x, y):  
-        return self.robot_ligne_courante == x and self.robot_colonne_courante == y
-
-    def robot_a_change_de_position(self):  
-        return self.robot_ligne_courante != self.robot_ligne_init or self.robot_colonne_courante != self.robot_colonne_init 
-
-    def ecrire_labyrinthe(self):
-	if self.robot_a_change_de_position():
-            # reecrire toute la carte 
-            chemin = os.path.join("cartes", self.nom + ".txt")
-            with open(chemin, "w") as fichier:
-                for ligne in range(self.nb_lignes):
-                    nouvelle_chaine = ""
-                    for colonne in range(self.nb_colonnes):
-                        if self.ancienne_position_robot(ligne, colonne):
-                            nouvelle_chaine = nouvelle_chaine + ' ' 
-                        elif self.nouvelle_position_robot(ligne, colonne):
-                            nouvelle_chaine = nouvelle_chaine + 'X' 
-                        else: 
-                             nouvelle_case = self.lire_case(ligne,colonne)
-                             if nouvelle_case == 'V':
-                                 nouvelle_case = ' '
-                             nouvelle_chaine = nouvelle_chaine + nouvelle_case 
-                    fichier.write(nouvelle_chaine + "\n")
-                 
-        
-    def lire_case(self, x, y):
-	""" x = no de ligne commence a 0, y = no de colonne commence a 0"""
-        ligne = self.labyrinthe[x]
-        return (ligne[y])  
-
-    def case_accessible(self, x, y):
-        case = self.lire_case(x,y)
-        return case == '.' or case == 'V' or case == 'X' or case == 'U' 
-
-    def case_sortie(self, x, y):
-        return self.lire_case(x, y) == 'U'  
-
-    def afficher_case(self, x, y):
-	contenu = self.lire_case(x , y)
-        if contenu == 'V':
-            contenu = ' '
-        if (x == self.robot_ligne_init and y == self.robot_colonne_init):
-            contenu = ' '
-        if (x == self.robot_ligne_courante and y == self.robot_colonne_courante):
-            contenu = 'X'
-        return contenu
-
-
-    def tracer(self):
-        for l in range(self.nb_lignes):
-            for c in range(self.nb_colonnes): 
-                 print "ligne= ", l, "colonne= ", c, "valeur=", self.lire_case(l, c) 
-
-    def tracer_robot(self):
-        print "position initiale: x=", self.robot_ligne_init, "y=", self.robot_colonne_init
-        print "position courante: x=", self.robot_ligne_courante, "y=", self.robot_colonne_courante
-
-    def afficher(self):
-        print "\n"
-        for l in range(self.nb_lignes):
-            for c in range(self.nb_colonnes): 
-                 print self.afficher_case(l, c),
-            print 
-
-    def fin_de_partie(self):
-        print "Felicitations: vous avez gagne !"
-        exit()
-
-    def maj_position_robot(self, x, y):
-        self.robot_ligne_courante = x
-        self.robot_colonne_courante = y
-        self.afficher()
-
-    def changer_position_robot(self, mouvement):
-        """ mouvement = <direction><nombre de cases sur 1 chiffre> 
-            retourne True si changement OK
-            retourne False si changement KO
-        """ 
-        if (mouvement[0] != "N" and mouvement[0] != "E" and \
-             mouvement[0] != "S" and mouvement[0] != "O"):
-             print "Erreur: mouvement invalide"
-             return False
-        elif (len(mouvement) > 1 and mouvement[1].isdigit() == False):
-            print "Erreur mouvement invalide"
-            return False
-        elif (len(mouvement) > 1 and mouvement[1].isdigit() == True):
-            nb_cases = int(mouvement[1])
-        else:
-            nb_cases = 1
-       
-        mouvt = mouvement[0]
-        ligne = self.robot_ligne_courante
-        colonne = self.robot_colonne_courante
-        for i in range(nb_cases):
-            if mouvt == 'N':
-               ligne = ligne - 1
-            elif mouvt == 'S': 
-               ligne = ligne + 1
-            elif mouvt == 'O': 
-               colonne = colonne - 1 
-            else: 
-               colonne = colonne + 1 
-            if self.case_sortie(ligne,colonne):
-                self.maj_position_robot(ligne, colonne)               
-                print "Felicitations ! Vous avez gagne !"
-                exit()
-            if self.case_accessible(ligne, colonne):
-                self.maj_position_robot(ligne, colonne)               
-                continue; 
-            else:
-                print "Erreur: mouvement interdit"
-                return False  
-
-    def __repr__(self):
-        return "<Carte {}>".format(self.nom)
-
-
-#
-</pre>
 <h3> Some learnings </h3>
 <li>Python error <code>NameError: global name 'NAME' is not defined</code> in class code is likely due either to missing <code>self</code> argument in method definition or to missing <code>self</code> argument in method call.</li>
 <li>Strings are immutable but a string can be built character by character with <code>'+'</code> operator: <code> s = s + 'c' </code></li>
