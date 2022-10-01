@@ -1,10 +1,7 @@
-<h1>Mes notes Python</h1>
-
-
+# Python notes
 document created 03-OCT-2017
-<br>
 
-<h3>Basics</h3>
+## Basics 
 To exit the interpreter: 
 <pre>
 >> exit
