@@ -12,9 +12,6 @@ import random
 liste_7  = []
 liste_8  = []
 liste_9  = []
-liste_10 = []
-liste_11 = []
-liste_12 = []
 
 #------------------------
 def lire_liste_de_mots():
@@ -51,10 +48,10 @@ def choisir_nombre_de_lettres():
       print("Le dictionnaire des mots de 7 lettres est vide")
       reponse = 0
     if (reponse == 8 and len(liste_8) ==0):
-      print("Le dictionnaire des mots de 7 lettres est vide")
+      print("Le dictionnaire des mots de 8 lettres est vide")
       reponse = 0
     if (reponse == 9 and len(liste_9) ==0):
-      print("Le dictionnaire des mots de 7 lettres est vide")
+      print("Le dictionnaire des mots de 9 lettres est vide")
       reponse = 0
   return reponse
 #----------------------
