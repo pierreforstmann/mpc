@@ -7,8 +7,8 @@
 Setup python environment:
 
 ```
-sudo python3 -m pip install PyCryptodome
-sudo python3 -m pip install PyPDF2
+python3 -m pip install PyCryptodome --user
+python3 -m pip install PyPDF2 --user
 ```
 
 Download this git repository:
@@ -26,7 +26,8 @@ unzip oracle-database_19.zip
 
 Run `cpp.py` to count number of PDF documents and total number of pages:
 ```
-$ python3 cpp.py -d oracle-database_19_20210820
+$ cd mpc
+$ python3 cpp.py -d ../oracle-database_19_20210820
 ......................................................................................................................................................
 total number of books: 150
 total number of pages: 63437
