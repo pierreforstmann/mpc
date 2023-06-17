@@ -29,9 +29,11 @@ def select_item(p_item: int) -> bool:
             print("brand = ", row[2])
             print("price = ", row[1], "\n");
         conn.commit()
-    except Exception as e:
-        print(errorcodes.lookup(e.pgcode))
+
+    except (Exception, pgsycopg2.Error) as error:
+        print("Error in SELECT", error)
         return False
+
     cur.close()
     conn.close()
     return True
