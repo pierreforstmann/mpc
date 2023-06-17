@@ -19,20 +19,22 @@ def select_item(p_item: int) -> bool:
     cur = conn.cursor()
     try:
         cur.execute("""
-                    SELECT item FROM public.items WHERE item = %s;
+                    SELECT item, price, brand
+                    FROM public.items 
+                    WHERE item = %s;
                     """, [p_item])
-        ret = (cur.fetchone())
+        result = (cur.fetchall())
+        for row in result:
+            print("item = ", row[0],)
+            print("brand = ", row[2])
+            print("price = ", row[1], "\n");
         conn.commit()
     except Exception as e:
         print(errorcodes.lookup(e.pgcode))
         return False
     cur.close()
     conn.close()
-    if ret is None:
-        return False
-    else:
-        return True
-
+    return True
 
 p_item = 1
 

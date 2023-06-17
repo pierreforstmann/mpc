@@ -10,7 +10,7 @@
 import psycopg2
 import os
 
-conn = psycopg2.connect("dbname=postgres user=test port=5542 password=test")
+conn = psycopg2.connect("dbname=postgres user=test port=5442 password=test")
 cur = conn.cursor()
 cur.execute("SELECT current_user")
 print(cur.fetchone())
