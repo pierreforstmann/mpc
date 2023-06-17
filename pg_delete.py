@@ -8,7 +8,7 @@
 # Copyright Pierre Forstmann 2023
 #------------------------------------------------------------------------------------------------
 import psycopg2
-import os
+import argparse 
 
 def delete_item(p_item: int):
     conn = psycopg2.connect("dbname=postgres user=test port=5442 password=test")
@@ -38,7 +38,8 @@ def delete_item(p_item: int):
 
     return True
 
-p_item = 1
-
-delete_item(p_item)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--item", required=True, help="""item number""")
+    delete_item(parser.parse_args().item)
 

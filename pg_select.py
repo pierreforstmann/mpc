@@ -9,8 +9,7 @@
 #------------------------------------------------------------------------------------------------
 import psycopg2
 from psycopg2 import connect
-# import the error handling libraries for psycopg2
-from psycopg2 import OperationalError, errorcodes, errors
+import argparse
 
 import os
 
@@ -38,7 +37,8 @@ def select_item(p_item: int) -> bool:
     conn.close()
     return True
 
-p_item = 1
-
-print(select_item(p_item))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--item", required=True, help="""item number""")
+    print(select_item(parser.parse_args().item))
 
