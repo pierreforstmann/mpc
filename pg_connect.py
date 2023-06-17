@@ -1,18 +1,25 @@
 #
 # pg_connect.py
 #
-# Python code to connect to  PG instance.
+# PG connection pool
 #
-# $ python3 pg_connect.py
-# 
 # Copyright Pierre Forstmann 2023
 #------------------------------------------------------------------------------------------------
 import psycopg2
-import os
+from psycopg2 import pool
 
-conn = psycopg2.connect("dbname=postgres user=test port=5442 password=test")
-cur = conn.cursor()
-cur.execute("SELECT current_user")
-print(cur.fetchone())
-cur.close()
-conn.close()
+connection_pool = psycopg2.pool.SimpleConnectionPool(
+                     1,      # minimum number of connections
+                     10,     # maximum number of connections
+                     user="test",
+                     password="test",
+                     host="localhost",
+                     port="5442",
+                     database="postgres"
+                   )
+
+# Get a connection from the pool
+
+connection = connection_pool.getconn()
+
+

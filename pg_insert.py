@@ -8,11 +8,11 @@
 # Copyright Pierre Forstmann 2023
 #------------------------------------------------------------------------------------------------
 import psycopg2
-import os
 import argparse
+import pg_connect
 
 def insert_item(p_item: int, p_price: float, p_brand: str):
-    conn = psycopg2.connect("dbname=postgres user=test port=5442 password=test")
+    conn = pg_connect.connection
     cur = conn.cursor()
     try:
        cur.execute("""
@@ -21,7 +21,6 @@ def insert_item(p_item: int, p_price: float, p_brand: str):
                    """, (p_item, p_price, p_brand))
        conn.commit()
        cur.close()
-       conn.close()
 
     except (Exception, psycopg2.Error) as error:
        print("Error in INSERT", error)

@@ -10,11 +10,10 @@
 import psycopg2
 from psycopg2 import connect
 import argparse
-
-import os
+import pg_connect
 
 def select_item(p_item: int) -> bool:
-    conn = psycopg2.connect("dbname=postgres user=test port=5442 password=test")
+    conn = pg_connect.connection 
     cur = conn.cursor()
     try:
         cur.execute("""
@@ -34,7 +33,6 @@ def select_item(p_item: int) -> bool:
         return False
 
     cur.close()
-    conn.close()
     return True
 
 if __name__ == "__main__":

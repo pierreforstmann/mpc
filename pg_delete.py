@@ -9,9 +9,10 @@
 #------------------------------------------------------------------------------------------------
 import psycopg2
 import argparse 
+import pg_connect
 
 def delete_item(p_item: int):
-    conn = psycopg2.connect("dbname=postgres user=test port=5442 password=test")
+    conn = pg_connect.connection 
     cur = conn.cursor()
     try:
         cur.execute("""
@@ -30,7 +31,6 @@ def delete_item(p_item: int):
                    """, [p_item])
         conn.commit()
         cur.close()
-        conn.close()
 
     except (Exception, psycopg2.Error) as error:
         print("Error in DELETE", error)
