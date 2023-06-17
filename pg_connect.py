@@ -9,8 +9,8 @@ import psycopg2
 from psycopg2 import pool
 
 connection_pool = psycopg2.pool.SimpleConnectionPool(
-                     1,      # minimum number of connections
-                     10,     # maximum number of connections
+                     1,     # minimum number of connections
+                     1,     # maximum number of connections
                      user="test",
                      password="test",
                      host="localhost",
