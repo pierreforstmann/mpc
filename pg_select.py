@@ -20,15 +20,14 @@ def select_item(p_item: int) -> bool:
                     SELECT item, price, brand
                     FROM public.items 
                     WHERE item = %s;
-                    """, [p_item])
-        result = (cur.fetchall())
-        for row in result:
-            print("item = ", row[0],)
-            print("brand = ", row[2])
-            print("price = ", row[1], "\n");
+                    """, p_item)
+        row = (cur.fetchone())
+        print("item = ", row[0],)
+        print("brand = ", row[2])
+        print("price = ", row[1], "\n");
         conn.commit()
 
-    except (Exception, pgsycopg2.Error) as error:
+    except (Exception, psycopg2.Error) as error:
         print("Error in SELECT", error)
         return False
 
