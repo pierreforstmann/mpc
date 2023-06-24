@@ -62,14 +62,14 @@ def get_item() -> Item:
     local_item = Item()
     return local_item
 
-# http://127.0.0.1:8000/get-item 
+# http://127.0.0.1:8000/get-item/1
 @app.get("/get-item/{item_id}")
 def get_item(p_item: int) -> Item:
-    logger.debug("entry")
+    logger.debug("entry get_item")
     conn = connection 
     cur = conn.cursor()
     local_item = Item()
-    logger.debug("start")
+    logger.debug("try ... SELECT")
     try:
         cur.execute("""
                     SELECT item, price, brand
@@ -77,9 +77,15 @@ def get_item(p_item: int) -> Item:
                     WHERE item = %s;
                     """, [p_item])
         row = (cur.fetchone())
-        local_item.item = row[0]
-        local_item.brand = row[2]
-        local_item.price = row[1]
+        if row == None:
+            local_item.item = -1
+            local_item.brand = ""
+            local_item.price = -1
+        else:
+            local_item.item = row[0]
+            local_item.brand = row[2]
+            local_item.price = row[1]
+        logger.debug("end get_item")
         return local_item
         conn.commit()
 
@@ -89,22 +95,29 @@ def get_item(p_item: int) -> Item:
     cur.close()
 
 
-# http://127.0.0.1:8000/get-by-name/1?test=2&name=Milk
-@app.get("/get-by-name/{item_id}")
-def get_item(*, item_id: int, name: Optional[str] = None, test: int):
-    for item_id in inventory:
-        if inventory[item_id].name == name:
-            return inventory[item_id]
-    raise HTTPException(status_code=404, detail="Item name not found")
-
 #
 @app.post("/create-item/{item_id}")
-def create_item(item_id: int, item: Item):
-    if item_id in inventory:
-        return {"Error": "Item ID already exists"}
+def create_item(item: Item):
+    logger.debug("entry create_item")
+    conn = connection 
+    cur = conn.cursor()   
+    try:
+        cur.execute("""
+                   INSERT INTO public.items (item, price, brand)
+                   VALUES (%s, %s, %s);
+                   """, (item.item, item.price, item.brand))
+        conn.commit()
+        cur.close()
+        logger.debug("end create_item")
+    except (Exception, psycopg2.Error) as error:
+       print("Error in INSERT", error)
+       conn.rollback()       
 
-    inventory[item_id] = item 
-    return inventory[item_id]
+    return item
+
+
+    
+    
     
 #
 
