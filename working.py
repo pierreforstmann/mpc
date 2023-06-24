@@ -150,3 +150,42 @@ def delete_item(p_item: int):
         conn.rollback()
 
     return local_item
+
+
+#
+@app.put("/update-item/{item_id}")
+def update_item(p_item_id: int, p_item: Item):
+    local_item = Item()
+    conn = connection
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+                    SELECT item, brand, price
+                    FROM public.items
+                    WHERE item = %s
+                    """, [p_item_id])
+        row = cur.fetchone();
+        if (row == None):
+            local_item.item = -1
+            local_item.brand = ""
+            local_item.price = -1
+            return local_item
+        else:
+            # no PK change
+            local_item.item = p_item_id
+            local_item.brand = p_item.brand
+            local_item.price = p_item.price
+
+        cur.execute("""
+                   UPDATE public.items 
+                   SET price=%s, brand=%s
+                   WHERE item = %s 
+                   """, (local_item.price, local_item.brand, p_item_id))
+        conn.commit()
+        cur.close()
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error in UPDATE", error)
+        conn.rollback()
+
+    return local_item
