@@ -17,6 +17,7 @@ from pydantic import BaseModel
 import psycopg2
 from psycopg2 import pool
 from loguru import logger
+import configparser
 
 class Item(BaseModel):
     item: int = 0
@@ -27,14 +28,23 @@ app = FastAPI()
 
 logger.add("/tmp/working.log", format="{time} {level} {message}", level="DEBUG")
 
+config = configparser.ConfigParser()
+config.read("working.ini")
+pg_user = config['default']['user']
+pg_password = config['default']['password']
+pg_port = config['default']['port']
+pg_host = config['default']['host']
+pg_database = config['default']['database']
+
+
 connection_pool = psycopg2.pool.SimpleConnectionPool(
                      1,     # minimum number of connections
                      1,     # maximum number of connections
-                     user="test",
-                     password="test",
-                     host="localhost",
-                     port="5442",
-                     database="postgres"
+                     user=pg_user,
+                     password=pg_password,
+                     host=pg_host,
+                     port=pg_port,
+                     database=pg_database
                    )
 
 # Get a connection from the pool
