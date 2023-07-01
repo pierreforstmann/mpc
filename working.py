@@ -20,9 +20,8 @@ from loguru import logger
 import configparser
 
 class Item(BaseModel):
-    item: int = 0
-    price: float = 0
-    brand: str = ""
+    item_id: int = 0
+    item_text: str = ""
 
 app = FastAPI()
 
@@ -81,19 +80,17 @@ def get_item(p_item: int) -> Item:
     logger.debug("try ... SELECT")
     try:
         cur.execute("""
-                    SELECT item, price, brand
+                    SELECT item_id, item_text 
                     FROM public.items 
-                    WHERE item = %s;
+                    WHERE item_id = %s;
                     """, [p_item])
         row = (cur.fetchone())
         if row == None:
-            local_item.item = -1
-            local_item.brand = ""
-            local_item.price = -1
+            local_item.item_id = -1
+            local_item.item_text = ""
         else:
-            local_item.item = row[0]
-            local_item.brand = row[2]
-            local_item.price = row[1]
+            local_item.item_id = row[0]
+            local_item.item_text = row[1]
         logger.debug("end get_item")
         return local_item
         conn.commit()
@@ -112,9 +109,9 @@ def create_item(item: Item):
     cur = conn.cursor()   
     try:
         cur.execute("""
-                   INSERT INTO public.items (item, price, brand)
-                   VALUES (%s, %s, %s);
-                   """, (item.item, item.price, item.brand))
+                   INSERT INTO public.items (item_id, item_text)
+                   VALUES (%s, %s);
+                   """, (item.item_id, item.item_text))
         conn.commit()
         cur.close()
         logger.debug("end create_item")
@@ -133,24 +130,22 @@ def delete_item(p_item: int):
     cur = conn.cursor()
     try:
         cur.execute("""
-                    SELECT item, brand, price
+                    SELECT item_id, item_text 
                     FROM public.items
-                    WHERE item = %s
+                    WHERE item_id = %s
                     """, [p_item])
         row = cur.fetchone();
         if (row == None):
-            local_item.item = -1
-            local_item.brand = ""
-            local_item.price = -1
+            local_item.item_id = -1
+            local_item.item_text = ""
             return local_item
         else:
-            local_item.item = row[0]
-            local_item.brand = row[1]
-            local_item.price = row[2]
+            local_item.item_id = row[0]
+            local_item.item_text = row[1]
 
         cur.execute("""
                    DELETE FROM public.items 
-                   WHERE item = %s 
+                   WHERE item_id = %s 
                    """, [p_item])
         conn.commit()
         cur.close()
@@ -170,27 +165,25 @@ def update_item(p_item_id: int, p_item: Item):
     cur = conn.cursor()
     try:
         cur.execute("""
-                    SELECT item, brand, price
+                    SELECT item_id, item_text 
                     FROM public.items
-                    WHERE item = %s
+                    WHERE item_id = %s
                     """, [p_item_id])
         row = cur.fetchone();
         if (row == None):
-            local_item.item = -1
-            local_item.brand = ""
-            local_item.price = -1
+            local_item.item_id = -1
+            local_item.item_text = ""
             return local_item
         else:
             # no PK change
-            local_item.item = p_item_id
-            local_item.brand = p_item.brand
-            local_item.price = p_item.price
+            local_item.item_id = p_item_id
+            local_item.item_text = p_item.item_text
 
         cur.execute("""
                    UPDATE public.items 
-                   SET price=%s, brand=%s
-                   WHERE item = %s 
-                   """, (local_item.price, local_item.brand, p_item_id))
+                   SET item_text=%s
+                   WHERE item_id = %s 
+                   """, (local_item.item_text, local_item.item_id))
         conn.commit()
         cur.close()
 
