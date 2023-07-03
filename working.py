@@ -63,11 +63,23 @@ def about():
     logger.debug("About: OK")
     return {"Data": "About"}
 
-# http://127.0.0.1:8000/get-item
-@app.get("/get-item/")
-def get_item() -> Item:
-    local_item = Item()
-    return local_item
+# http://127.0.0.1:8000/get-items
+@app.get("/get-items/")
+def get_items() :
+    item_list = []
+    conn = connection
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+                    SELECT item_id, item_text
+                    FROM public.items;
+                    """)
+        item_list = cur.fetchall()
+        cur.close()
+        return item_list
+    
+    except (Exception, psycopg2.Error) as error:
+        print("Error in SELECT", error)
 
 
 # http://127.0.0.1:8000/get-item/1
