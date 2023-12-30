@@ -7,6 +7,7 @@
 import sys
 import mailbox
 import re
+import sqlite3
 
 bugrefd = {}
 
@@ -44,3 +45,10 @@ if __name__ == "__main__":
             get_mail_data(mbox)
     #
     print("final bugrefd =>", bugrefd)
+    #
+    connexion = sqlite3.connect("bugs.db")
+    cursor = connexion.cursor()
+    for key, value in bugrefd.items():
+        data = (key, value[0], value[1], value[2])
+        cursor.execute("INSERT into bugs values(?, ?, ?, ?)", data)
+    connexion.commit()
