@@ -8,23 +8,31 @@ import sys
 import mailbox
 import re
 import sqlite3
+from dateutil.parser import *
+from dateutil import tz
+import datetime
 
 bugrefd = {}
 
 def get_mail_data(filename):
     global bugrefd
     mbox = mailbox.mbox(filename)
-    regex = re.compile('[\s\S][#]\d+')
+    subject_regex = re.compile('BUG (#\d+)')
     for message in mbox:
        subject = message['subject']
-       if subject is not None:
-           if regex.search(subject):
-                bugref = regex.search(subject).group()
+       date = message['Date']
+       if subject is not None and date is not None:
+           if subject_regex.search(subject):
+                bugref = subject_regex.search(subject).group(1)
                 # print(" bugno => ", bugref)
+                date_regex = re.compile('[A-Za-z]+[,]\s\d+\s[A-Za-z]+\s\d+\s\d+:\d+:\d+\s[+-]\d+')
+                dateref  = date_regex.search(date).group()
+                dt = parse(dateref)
+                dt_str = dt.astimezone(tz.tzutc()).isoformat()
                 if bugref not in bugrefd:
-                    bugrefd[bugref] = ((1, message['Date'], message['Message-Id']))
+                    bugrefd[bugref] = ((1, dt_str, message['Message-Id']))
                 else:
-                    bugrefd[bugref] = ((bugrefd[bugref][0] + 1, message['Date'], message['Message-Id']))
+                    bugrefd[bugref] = ((bugrefd[bugref][0] + 1, dt_str, message['Message-Id']))
     print("current bugrefd => ", bugrefd)
 
 if __name__ == "__main__":
